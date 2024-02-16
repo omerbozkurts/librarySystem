@@ -27,13 +27,13 @@ Python must be installed to run the code. The `books.txt` file in the main direc
 2. Navigate to the main directory:
 
     ```bash
-    cd library-management-system
+    cd librarySystem
     ```
 
 3. Run the code:
 
     ```bash
-    python main.py
+    python library.py
     ```
 
 ## Notes
