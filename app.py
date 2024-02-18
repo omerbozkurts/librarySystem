@@ -1,6 +1,7 @@
 import customtkinter as ctk 
 import tkinter as tk
 import datetime
+import random
 
 class UserInterface(ctk.CTk):
 
@@ -49,25 +50,46 @@ class UserInterface(ctk.CTk):
 
         def girisYap():
             enteredUsrName = str(kullaniciAdiLogin.get())
+            enteredUsrNamePsw = str(parolaLoginMember.get())
             enteredMailAdr = str(eMailLogin.get())
-            enteredPsw = str(parolaLogin.get())
-            isEnteredTrue = False
+            enteredMailPsw = str(parolaLoginLibrarian.get())
+            isFindInFile = False
+            gRole = str(tabview._current_name)
+            gUserId = 'no info'
+            gName = 'no info'
+            gSurname = 'no info'
+            gUserState = 'no info'
+            gUserName = 'no info'
             openFileForLogin()
-            for line in self.fileFLogin.readlines():
+            for line in self.fileFLogin.readlines() and not isFindInFile:
                 line = line.split(',')
-                sName = line[0]
-                sSurname = line[1]
-                sUserPsw = line[2]
-                sUserState = line[3]
-                sUserSpec = line[4]
-                if (sUserSpec == enteredMailAdr and sUserPsw == enteredPsw) or (sUserSpec == enteredUsrName and sUserPsw == enteredPsw):
+                sUsrId = str(line[0])
+                sName = str(line[1])
+                sSurname = str(line[2])
+                sUserPsw = str(line[3])
+                sUserState = str(line[4])
+                sUserSpec = str(line[5])
+                if gRole == 'Member' and ( enteredMailAdr == sUserSpec and enteredMailPsw == sUserPsw ):
+
+                    gUserId = sUsrId
+                    gRole = sUserState
                     gName = sName
                     gSurname = sSurname
                     gUserState = sUserState
-                    isEnteredTrue = True
+                    isFindInFile = True
+                    self.openMemberPage()
 
-            print(f'{isEnteredTrue} {enteredUsrName} {sUserSpec}')
+                elif gRole == "Librarian" and ( enteredUsrName == sUserState and  enteredUsrNamePsw == sUserPsw ):
 
+                    gUserId = sUsrId
+                    gRole = sUserState
+                    gName = sName
+                    gSurname = sSurname
+                    isFindInFile = True
+                    self.openLibrarianPage()
+
+                else:
+                    pass
 
         def girisSayfasiniAc(self,ks):
                 ks.pack_forget()
@@ -186,8 +208,9 @@ class UserInterface(ctk.CTk):
                     usrRole = str(self.selectedOption)
                     usrSpecialInfo =lambda usrRole:str(self.kullaniciEmail.get()) if usrRole == 'Member' else str(self.kutuphaneciId.get())
                     usrSpInfo = usrSpecialInfo(usrRole)
+                    usrId = random.randint(10000,99999)
                     usersFile = open('users.txt','a+',encoding='utf-8')
-                    usersFile.write(f'{usrName},{usrSurname},{usrPsw},{usrRole},{usrSpInfo}\n')
+                    usersFile.write(f'{usrId},{usrName},{usrSurname},{usrPsw},{usrRole},{usrSpInfo},\n')
                     usersFile.close()
                     kayitBasariliLbl=ctk.CTkLabel(app,text='Registration Successful \n\n\n\nYou are directed to the login page',font=('text',16))
                     kayitBasariliLbl.after(1000,lambda:kayitBasariliLbl.pack(pady=150))
@@ -206,8 +229,8 @@ class UserInterface(ctk.CTk):
         kullaniciAdiLogin= ctk.CTkEntry(librarianFrame,placeholder_text="Employee Id") 
         kullaniciAdiLogin.pack(pady=12,padx=10) 
 
-        parolaLogin= ctk.CTkEntry(librarianFrame,placeholder_text="Password",show="*") 
-        parolaLogin.pack(pady=12,padx=10) 
+        parolaLoginLibrarian= ctk.CTkEntry(librarianFrame,placeholder_text="Password",show="*") 
+        parolaLoginLibrarian.pack(pady=12,padx=10) 
 
 
         girisYapB = ctk.CTkButton(librarianFrame,text='Login',command=girisYap) 
@@ -226,8 +249,8 @@ class UserInterface(ctk.CTk):
         eMailLogin= ctk.CTkEntry(memberFrame,placeholder_text="Email") 
         eMailLogin.pack(pady=12,padx=10) 
 
-        parolaLogin= ctk.CTkEntry(memberFrame,placeholder_text="Password",show="*") 
-        parolaLogin.pack(pady=12,padx=10) 
+        parolaLoginMember= ctk.CTkEntry(memberFrame,placeholder_text="Password",show="*") 
+        parolaLoginMember.pack(pady=12,padx=10) 
 
 
         girisYapB = ctk.CTkButton(memberFrame,text='Login',command=girisYap) 
