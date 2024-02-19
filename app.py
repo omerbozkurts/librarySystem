@@ -2,6 +2,7 @@ import customtkinter as ctk
 import tkinter as tk
 import datetime
 import random
+import user
 
 class UserInterface(ctk.CTk):
 
@@ -50,46 +51,32 @@ class UserInterface(ctk.CTk):
 
         def girisYap():
             enteredUsrName = str(kullaniciAdiLogin.get())
-            enteredUsrNamePsw = str(parolaLoginMember.get())
+            enteredUsrNamePsw = str(parolaLoginLibrarian.get())
             enteredMailAdr = str(eMailLogin.get())
-            enteredMailPsw = str(parolaLoginLibrarian.get())
-            isFindInFile = False
+            enteredMailPsw = str(parolaLoginMember.get())
             gRole = str(tabview._current_name)
-            gUserId = 'no info'
-            gName = 'no info'
-            gSurname = 'no info'
-            gUserState = 'no info'
-            gUserName = 'no info'
-            openFileForLogin()
-            for line in self.fileFLogin.readlines() and not isFindInFile:
-                line = line.split(',')
-                sUsrId = str(line[0])
-                sName = str(line[1])
-                sSurname = str(line[2])
-                sUserPsw = str(line[3])
-                sUserState = str(line[4])
-                sUserSpec = str(line[5])
-                if gRole == 'Member' and ( enteredMailAdr == sUserSpec and enteredMailPsw == sUserPsw ):
+            girisDurum = ''
+            whichFrame = ''
 
-                    gUserId = sUsrId
-                    gRole = sUserState
-                    gName = sName
-                    gSurname = sSurname
-                    gUserState = sUserState
-                    isFindInFile = True
-                    self.openMemberPage()
+            if gRole == 'Member':
+                girisDurum = user.User().login(enteredMailAdr,enteredMailPsw,gRole)
+                whichFrame = memberFrame
+            elif gRole == 'Librarian':
+                girisDurum = user.User().login(enteredUsrName,enteredUsrNamePsw,gRole)
+                whichFrame = librarianFrame
 
-                elif gRole == "Librarian" and ( enteredUsrName == sUserState and  enteredUsrNamePsw == sUserPsw ):
+            girisDurumlbl=ctk.CTkLabel(whichFrame,text=girisDurum)
+            girisDurumlbl.pack(pady=12,padx=10)
+            girisDurumlbl.after(1500,lambda:girisDurumlbl.destroy())
 
-                    gUserId = sUsrId
-                    gRole = sUserState
-                    gName = sName
-                    gSurname = sSurname
-                    isFindInFile = True
-                    self.openLibrarianPage()
+            if girisDurum == 'Login Successful':
 
-                else:
-                    pass
+                kayitBasariliLbl=ctk.CTkLabel(app,text='Login Successful \n\n\n\nYou are directed to the app',font=('text',16))
+                kayitBasariliLbl.after(1000,lambda:kayitBasariliLbl.pack(pady=150))
+                kayitBasariliLbl.after(1000,lambda:tabview.destroy())
+                kayitBasariliLbl.after(3000,self.anasayfa)
+                kayitBasariliLbl.after(3000,lambda:kayitBasariliLbl.destroy())
+
 
         def girisSayfasiniAc(self,ks):
                 ks.pack_forget()
@@ -107,7 +94,7 @@ class UserInterface(ctk.CTk):
             
             self.kutuphaneciId= ctk.CTkEntry(kayitSayfasi,placeholder_text='Librarian Id')
             self.kullaniciEmail= ctk.CTkEntry(kayitSayfasi,placeholder_text='Email')
-            self.kayitOlB = ctk.CTkButton(kayitSayfasi,text='Kayıt Ol',command= lambda:kayitDurum(self))
+            self.kayitOlB = ctk.CTkButton(kayitSayfasi,text='Kayıt Ol',command= lambda:kayitDurum())
             self.geriDonB = ctk.CTkButton(kayitSayfasi,text='Geri Dön',command=lambda:girisSayfasiniAc(self,kayitSayfasi)) 
 
             
@@ -150,68 +137,18 @@ class UserInterface(ctk.CTk):
 
             self.geriDonB.pack(pady=12,padx=10)
 
-            def kayitDurum(self):
-                kayitlanmaDurumu = ''
-                isNameTrue = True
-
-                if len(str(kullaniciAd.get()))<4 or len(str(kullaniciSoyad.get()))<4:
-                    kayitlanmaDurumu = 'Name or Surname must consist of at least four characters.'
-                    isNameTrue=False
-
-                try:
-                    datetime.datetime.strptime(kullaniciDogum.get(), '%d/%m/%Y')
-                    isTimeFormatRight = True
-                except:
-                    isTimeFormatRight = False
-                    
-                if isTimeFormatRight and isNameTrue:
-                    try:
-                        psw = int(kullaniciSifre.get())
-                    except:
-                        psw = kullaniciSifre.get()
-                    if isinstance(psw,int):
-                        if psw>99999 and psw<1000000:
-                            kayitlanmaDurumu = "Registration Successful"
-                            if self.selectedOption == 'Librarian':
-                                try:
-                                    ktpId = int(self.kutuphaneciId.get())
-                                except:
-                                    ktpId = self.kutuphaneciId.get()
-                                    if isinstance(ktpId,int):
-                                        if ktpId>99999999 and ktpId<1000000000:
-                                            kayitlanmaDurumu = 'Registration Successful'
-                                        else:
-                                            kayitlanmaDurumu = 'Librarian Id must be nine Digits'
-                                    else:
-                                        kayitlanmaDurumu = 'Librarian Id must consist of numbers'
-                            elif self.selectedOption == "Member":
-                                if str(self.kullaniciEmail.get()).endswith('.com'):
-                                    kayitlanmaDurumu = 'Registration Successful'
-                                else:
-                                    kayitlanmaDurumu = 'Email address must end with .com'
-
-                        else:
-                            kayitlanmaDurumu = 'Password must be six Digits'
-                    else:
-                        kayitlanmaDurumu = 'Password must consist of numbers'
-                elif isNameTrue and not isTimeFormatRight:
-                    kayitlanmaDurumu = 'Date format is not true'
+            def kayitDurum():
+                kayitlanmaDurumu = str(user.User().signIn(kullaniciAd.get(),
+                                                        kullaniciSoyad.get(),kullaniciDogum.get(),self.selectedOption,
+                                                        self.kullaniciEmail.get(),self.kutuphaneciId.get(),kullaniciSifre.get()))
+                
 
                 kayitDurumlbl=ctk.CTkLabel(kayitSayfasi,text=kayitlanmaDurumu)
                 kayitDurumlbl.pack(pady=12,padx=10)
                 kayitDurumlbl.after(1500,lambda:kayitDurumlbl.destroy())
 
                 if kayitlanmaDurumu == 'Registration Successful':
-                    usrName = str(kullaniciAd.get())
-                    usrSurname = str(kullaniciSoyad.get())
-                    usrPsw = str(kullaniciSifre.get())
-                    usrRole = str(self.selectedOption)
-                    usrSpecialInfo =lambda usrRole:str(self.kullaniciEmail.get()) if usrRole == 'Member' else str(self.kutuphaneciId.get())
-                    usrSpInfo = usrSpecialInfo(usrRole)
-                    usrId = random.randint(10000,99999)
-                    usersFile = open('users.txt','a+',encoding='utf-8')
-                    usersFile.write(f'{usrId},{usrName},{usrSurname},{usrPsw},{usrRole},{usrSpInfo},\n')
-                    usersFile.close()
+
                     kayitBasariliLbl=ctk.CTkLabel(app,text='Registration Successful \n\n\n\nYou are directed to the login page',font=('text',16))
                     kayitBasariliLbl.after(1000,lambda:kayitBasariliLbl.pack(pady=150))
                     kayitBasariliLbl.after(1000,lambda:kayitSayfasi.destroy())
@@ -258,6 +195,9 @@ class UserInterface(ctk.CTk):
 
         kayitOlB = ctk.CTkButton(memberFrame,text='Sign in',command=kayitOl)
         kayitOlB.pack(pady=12,padx=10)
+
+    def anasayfa(self):
+        print(user.User().role)
 
 
 if __name__ == "__main__":
