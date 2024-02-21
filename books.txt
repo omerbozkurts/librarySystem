@@ -1,7 +1,12 @@
-BO78788,kitap ad,yazar efendi,10/10/2010,435,18/2/2024,2,2
 BO78988,kitap iki,yazar iki,10/10/2012,435,18/2/2024,2,2
 BO78288,kitap uc,yazar uc,10/10/2013,435,18/2/2024,2,2
 BO78188,kitap dort,yazar dort,10/10/2014,435,18/2/2024,2,2
 BO78488,kitap bes,yazar bes,10/10/2015,435,18/2/2024,2,2
 BO48788,kitap alti,yazar alti,10/10/2016,435,18/2/2024,2,2
 BO58788,kitap yedi,yazar yedi,10/10/2017,435,18/2/2024,2,2
+BO15019,c programalama,deitel kardesler,10/10/2010,1450,20/2/2024,10,10
+BO71952,mesaj,carl sagan,10/10/1998,536,20/2/2024,5,5
+BO78263,kitap,kitap,10/10/2000,145,20/2/2024,14,16
+BO32406,tutunamayanlar,oguz atay,01/01/1978,450,21/2/2024,5,5
+BO58929,asdfa,asdaf,10/10/2000,14,21/2/2024,15,15
+BO89934,kitap ad,yazar efendi,10/10/2010,435,21/2/2024,7,7

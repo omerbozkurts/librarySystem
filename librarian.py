@@ -40,7 +40,8 @@ class Librarian(user.User):
 
         if len(chkName) > 4:
             if len(chkPerson) > 4:
-                if datetime.datetime.strptime(chkRelaseDate, '%d/%m/%Y'):
+                try: 
+                    datetime.datetime.strptime(chkRelaseDate, '%d/%m/%Y')
                     try:
                         int(chkPageNum)
                         try:
@@ -54,7 +55,7 @@ class Librarian(user.User):
                             situationMessage = 'Entered Stock Number must be Number'
                     except:
                         situationMessage = 'Entered Page Number or Duration must be Number'
-                else:
+                except:
                     situationMessage = 'Date Format is not Right'
             else:
                 situationMessage = 'Person Name Must be at Least 4 char'
@@ -84,7 +85,7 @@ class Librarian(user.User):
             if str(ckName) == str(qName) and str(ckPerson) == str(qPerson):
                 qStcNum = int(qStcNum) + int(line[6])
                 qShelfNum = int(qShelfNum) + int(line[7])
-        self.removeLibraryItem(self,itemType,qName)
+        self.removeLibraryItem(itemType,qName)
         self.addLibraryItems(itemType,qName,qPerson,qRlsDate,qPageNumorDuration,qStcNum,qShelfNum)
 
     def removeLibraryItem(self,itemType,rmvItemName):
