@@ -10,6 +10,8 @@ isMagazineCategorySelected = False
 isDvdCategorySelected = False
 lastSelectedCategory = None
 lastSelectedFrame = None
+removeSelectedCategory = None
+listSelectedCategory = None
 
 class UserInterface(ctk.CTk):
 
@@ -67,8 +69,6 @@ class UserInterface(ctk.CTk):
             girisDurumlbl=ctk.CTkLabel(whichFrame,text=girisDurum)
             girisDurumlbl.pack(pady=12,padx=10)
             girisDurumlbl.after(1500,lambda:girisDurumlbl.destroy())
-
-            girisDurum = 'Login Successful' #silinecek
 
             if girisDurum == 'Login Successful':
 
@@ -379,15 +379,68 @@ class UserInterface(ctk.CTk):
             librarianFrameAnasayfaRemove = ctk.CTkFrame(tabviewAnasayfa.tab('Remove Item')) 
             librarianFrameAnasayfaRemove.pack(pady=20,padx=40,fill='both',expand=True)
 
+            labelRemoveI = ctk.CTkLabel(librarianFrameAnasayfaRemove,text='Remove Item Page') 
+            labelRemoveI.pack(pady=12,padx=10) 
+
+
+            def selectedRemoveItem(choice):
+                global removeSelectedCategory
+                removeSelectedCategory = str(choice)
+            def removeItem():
+                if removeSelectedCategory == None:
+                    return
+                ctg = removeSelectedCategory.lower()
+                name = str(itemName.get())
+                message = librarian.Librarian().removeLibraryItem(ctg,name)
+
+                removeStatulbl = ctk.CTkLabel(librarianFrameAnasayfaRemove,text=message) 
+                removeStatulbl.pack(pady=12,padx=10)
+                removeItemButton.after(1000,lambda:removeStatulbl.destroy()) 
+
+            comboboxRemoveItem = ctk.CTkOptionMenu(librarianFrameAnasayfaRemove,values=["Books", "DVD", 'Magazine'],command=selectedRemoveItem)
+            comboboxRemoveItem.pack(padx=20, pady=10)
+            comboboxRemoveItem.set("Choose Item Type")
+
+
+            itemName= ctk.CTkEntry(librarianFrameAnasayfaRemove,placeholder_text="Item's Name") 
+            itemName.pack(pady=12,padx=10)
+
+            removeItemButton = ctk.CTkButton(librarianFrameAnasayfaRemove,text='Remove Item',command= removeItem) 
+            removeItemButton.pack(pady=12,padx=10)
+
+            def selectedListItem(choice):
+                global listSelectedCategory
+                listSelectedCategory = str(choice)
+            def listItem():
+                if listSelectedCategory == None:
+                    return
+                ctg = listSelectedCategory.lower()
+                listOfItems = librarian.Librarian().listItems(ctg)
+                listFrame = ctk.CTkScrollableFrame(librarianFrameAnasayfaList)
+                for line in listOfItems:
+                    listItemName = line[0]
+                    listItemAuthor = line[1]
+                    listItemDate = line[2]
+                    listItemPage = line[3]
+                    listItemTxt = f'{listItemName}\t {listItemAuthor}\t {listItemDate}\t {listItemPage}'
+                    itemsFrame = ctk.CTkLabel(listFrame,text = listItemTxt)
+                    itemsFrame.pack(pady=20,padx=40)
+                listFrame.pack(pady=20,padx=40,fill='both',expand=True)
 
             librarianFrameAnasayfaList = ctk.CTkFrame(tabviewAnasayfa.tab('List Items')) 
-            librarianFrameAnasayfaList.pack(pady=20,padx=40,fill='both',expand=True)      
+            librarianFrameAnasayfaList.pack(pady=20,padx=40,fill='both',expand=True)
+
+            comboboxListItem = ctk.CTkOptionMenu(librarianFrameAnasayfaList,values=["Books", "DVD", 'Magazine'],command=selectedListItem)
+            comboboxListItem.pack(padx=20, pady=10)
+            comboboxListItem.set("Choose Item Type")
+
+            listItemButton = ctk.CTkButton(librarianFrameAnasayfaList,text='List Item',command= listItem) 
+            listItemButton.pack(pady=12,padx=10)      
             
 
         def memberInterface():
             pass
         
-        librarianInterface() #silinecek
 
         if kullanici.role == 'Librarian':
             librarianInterface()

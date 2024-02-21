@@ -1,4 +1,3 @@
-BO78988,kitap iki,yazar iki,10/10/2012,435,18/2/2024,2,2
 BO78288,kitap uc,yazar uc,10/10/2013,435,18/2/2024,2,2
 BO78188,kitap dort,yazar dort,10/10/2014,435,18/2/2024,2,2
 BO78488,kitap bes,yazar bes,10/10/2015,435,18/2/2024,2,2

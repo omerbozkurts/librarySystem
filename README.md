@@ -33,7 +33,7 @@ Python must be installed to run the code. The `books.txt` file in the main direc
 3. Run the code:
 
     ```bash
-    python library.py
+    python app.py
     ```
 
 ## Notes
@@ -78,7 +78,7 @@ Kodu çalıştırmak için Python yüklü olmalıdır. Ana dizindeki `books.txt`
 3. Kodu çalıştırın:
 
     ```bash
-    python library.py
+    python app.py
     ```
 
 ## Notlar

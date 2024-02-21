@@ -1,6 +1,7 @@
 import user
 import datetime
 import time
+import os
 
 class Librarian(user.User):
 
@@ -89,9 +90,14 @@ class Librarian(user.User):
         self.addLibraryItems(itemType,qName,qPerson,qRlsDate,qPageNumorDuration,qStcNum,qShelfNum)
 
     def removeLibraryItem(self,itemType,rmvItemName):
+        
+        if not os.path.exists(itemType+'.txt'):
+            return (f'{rmvItemName} is not in Library')
+        elif rmvItemName == '':
+            return
         self.file = self.openTxtFile(itemType,'r')
         lines = self.file.readlines()
-        if any(rmvItemName in line for line in lines): 
+        if any(rmvItemName in line for line in lines):
             newLines = [line for line in lines if not rmvItemName in line] 
             self.file = self.openTxtFile(itemType,'w')
             for line in newLines:   
