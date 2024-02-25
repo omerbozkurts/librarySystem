@@ -89,3 +89,4 @@ Kodu çalıştırmak için Python yüklü olmalıdır. Ana dizindeki `books.txt`
 
 <img src="diagram.png" width="1651" height="874" /> 
 <img src="diagram2.png" width="1651" height="874" />
+<img src="diagram3.png" width="1651" height="874" />
